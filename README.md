@@ -1,0 +1,2 @@
+mycppmath ist eine einfache Bibliothek für Vektor- und Matrizenrechnung im 3-Dimensionalen Raum.
+Hier sind Basismethoden für einfache, generische und durch Intel Intrinsics geboostete, Vektor-Operationen implementiert.
