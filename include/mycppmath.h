@@ -4,13 +4,13 @@
 #include "include.h"
 #include "immintrin.h"
 
-#define PI 			3.14159265f
-#define TODEGREE 	180.0f / PI
-#define TORADIANS	PI / 180.0f
-#define INVERSE360  1.0f / 360.0f
-#define INVFOUR		1.0f / 4.0f
-#define INVEIGHT	1.0f / 8.0f
-#define INVSIXTEEN  1.0f / 16.0f
+#define PI 					3.14159265f
+#define TODEGREE 			180.0f / PI
+#define TORADIANS			PI / 180.0f
+#define INVERSE360  		1.0f / 360.0f
+#define INVFOUR				1.0f / 4.0f
+#define INVEIGHT			1.0f / 8.0f
+#define INVSIXTEEN  		1.0f / 16.0f
 
 /*
 	+-------------------------------------------------------------------+
@@ -18,6 +18,10 @@
 	|								WRAPPER 							|
 	|																	|
 	+-------------------------------------------------------------------+
+	
+	die klassen sind extrem zeitintensiv zu erzeugen! 
+	es sollte zur laufzeit unbedingt darauf geachtet werden, keine zu 
+	erstellen, um eine gute leistung zu erzielen!
 	
 */
 /*
@@ -77,7 +81,7 @@ class Vector4f
 		*/
 		~Vector4f();
 		/*
-			gibt die anzahl an elementen zurueck (offensichlich immer 4).
+			gibt die anzahl an elementen zurueck (immer 3).
 		*/
 		uint32_t dimension() const;
 		/*
@@ -132,7 +136,13 @@ class Vector4f
 			weisst der position i den float t zu.
 		*/
 		void set(uint32_t i, float t);
+		/*
+			berechnet den winkel zwischen dem aufrufenden und dem uebergebenen
+			vektor.
+		*/
 		float angle(Vector4f &v);
+		
+		float* content();
 		/*
 			vektor in der konsole ausgeben.
 		*/
@@ -145,6 +155,24 @@ class Vector4f
 		float *m_content;
 		uint32_t m_dimension;
 };
+
+/*
+	diese funktionen sollten fuer berechnungen genutzt werden.
+	sie erzeugen keinen neuen instanzen und vermeiden somit eine teuere 
+	speicher allokation!
+*/
+/*
+	addition.
+*/
+void addVector4f(const Vector4f* v0, const Vector4f* v1, Vector4f* result);
+/*
+	subtraktion
+*/
+void subVector4f(Vector4f* v0, Vector4f* v1, Vector4f* result);
+/*
+	kreuzprodukt.
+*/
+void crossproductVector4f(Vector4f* v0, Vector4f* v1, Vector4f* result);
 
 /*
 	+-------------------------------------------------------------------+
@@ -172,7 +200,7 @@ void addVectorf(
 		uint32_t n1
 		);
 		
-void subVector4f(
+void subVectorf(
 		const float **a,
 		const float **b, 
 		float **c,
@@ -227,8 +255,8 @@ float angleVector4f(
 		);
 
 uint32_t equalVectorf(
-		float *a,
-		float *b,
+		const float *a,
+		const float *b,
 		uint32_t n
 		);
 		

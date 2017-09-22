@@ -57,7 +57,7 @@ Matrix4f::Matrix4f(
 
 Matrix4f::~Matrix4f()
 {
-	delete[] m_content;
+	_aligned_free(m_content);
 };
 
 float Matrix4f::get(uint32_t row, uint32_t col) const
@@ -94,7 +94,7 @@ Vector4f::Vector4f(
 		float f3
 		)
 {
-	m_dimension = 4;
+	m_dimension = 3;
 	m_content = (float*) _aligned_malloc(4 * sizeof(float), 16);
 	m_content[0] = f0;
 	m_content[1] = f1;
@@ -104,7 +104,7 @@ Vector4f::Vector4f(
 
 Vector4f::~Vector4f()
 {
-	delete[] m_content;
+	_aligned_free(m_content);
 };
 
 uint32_t Vector4f::dimension() const
@@ -196,6 +196,26 @@ float Vector4f::angle(Vector4f &v)
 	return angleVector4f(m_content,v.m_content);
 };
 
+float* Vector4f::content()
+{
+	return m_content;
+};
+
+void addVector4f(Vector4f *v0, Vector4f *v1, Vector4f *result)
+{
+	addVectorf(v0->content(),v1->content(),result->content(),4);
+};
+
+void subVector4f(Vector4f *v0, Vector4f *v1, Vector4f *result)
+{
+	subVectorf(v0->content(),v1->content(),result->content(),4);
+};
+
+void crossproductVector4f(Vector4f *v0, Vector4f *v1, Vector4f *result)
+{
+	crossproductVector4f(v0->content(),v1->content(),result->content());
+};
+
 /*
 	+-------------------------------------------------------------------+
 	|																	|
@@ -220,8 +240,8 @@ static float* alignAndCopy(const float *a, uint32_t n)
 };
 
 uint32_t equalVectorf(
-		float *a,
-		float *b,
+		const float *a,
+		const float *b,
 		uint32_t n
 		)
 {
@@ -406,7 +426,7 @@ static void parallelSub128Vector4f(
 /*
 	a[i] - b[i] = c[i], für i < n0 und n1 ist die laenge eines einzelnen vektors.
 */
-void subVector4f(
+void subVectorf(
 		float **a, 
 		float **b, 
 		float **c, 
