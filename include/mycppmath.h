@@ -24,6 +24,9 @@
 	erstellen, um eine gute leistung zu erzielen!
 	
 */
+
+enum Axis{X=0,Y=1,Z=2,XY=3,YX=4,XZ=5,ZX=6,YZ=7,ZY=8,XYZ=9,XZY=10,ZXY=11,ZYX=12,YXZ=13,YZX=14};
+
 /*
 	basisklasse fuer eine 3x3 matrix (intern eine 3x4 matrix wegen den intrinsics). 
 */
@@ -43,20 +46,48 @@ class Matrix4f
 				float a8
 				);
 		~Matrix4f();
-		float 	get(uint32_t row, uint32_t col) const;
-		void 	set(uint32_t row, uint32_t col, float f);
-		Matrix4f* 	operator*	(const Matrix4f &m) const;
-		void 		operator*=	(const Matrix4f &m);
-		Matrix4f* 	operator+ 	(const Matrix4f &m) const;
-		void	 	operator+= 	(const Matrix4f &m);
-		Matrix4f* 	operator- 	(const Matrix4f &m) const;
-		void	 	operator-= 	(const Matrix4f &m);
-		void	 	operator= 	(const Matrix4f &m) const;
-		uint32_t 	operator== 	(const Matrix4f &m) const;
-		uint32_t 	equals		(Matrix4f &m) const;
-		void 		scale(float scalar);
+		float 			get(uint32_t row, uint32_t col) const;
+		void 			set(uint32_t row, uint32_t col, float f);
+		Matrix4f* 		operator*	(const Matrix4f &m) const;
+		void 			operator*=	(const Matrix4f &m);
+		Matrix4f* 		operator+ 	(const Matrix4f &m) const;
+		void	 		operator+= 	(const Matrix4f &m);
+		Matrix4f* 		operator- 	(const Matrix4f &m) const;
+		void	 		operator-= 	(const Matrix4f &m);
+		void	 		operator= 	(const Matrix4f &m) const;
+		uint32_t 		operator== 	(const Matrix4f &m) const;
+		uint32_t 		equals		(Matrix4f &m) const;
+		void 			scale		(float scalar);
+		float* 			content		() const;
+		void initializeAsRotationmatrix(
+				Axis a, 
+				float angleX, 
+				float angleY, 
+				float angleZ
+				);
+		/*
+			methoden zur synchronisation.
+			ein vektor kann immer von meheren lesern
+			gelesen werden, aber nur von einem schreiber
+			bearbeitet werden.
+			die aufrufe sind BLOCKIEREND.
+		*/
+		/*
+			fuer synchronisiertes lesen sollte der kritische
+			bereich in die read methoden eingeschlossen werden.
+		*/
+		void read();
+		void finishRead();
+		/*
+			fuer synchronisiertes schreiben sollte der kritische
+			bereich in die write methoden eingeschlossen werden.
+		*/
+		void write();
+		void finishWrite();
 	private:
 		float *m_content;
+		std::mutex *m_lock;
+		uint32_t m_readers,m_writer;
 };
 
 /*
@@ -112,10 +143,12 @@ class Vector4f
 			liefert das kreuzprodukt zurueck. (LIEFERT DAS KREUZPRODUKT FUER 3F!!!)
 		*/
 		Vector4f* 	operator*	(Vector4f &v) 	const;
+		Vector4f* 	operator*	(Matrix4f &m) 	const;
 		/*
 			weisst du aufrufenden objekt das kreuzprodukt zu.
 		*/
 		void 		operator*=	(Vector4f &v);
+		void 		operator*=	(Matrix4f &m);
 		/*
 			zuweisungsoperator.
 		*/
@@ -148,12 +181,33 @@ class Vector4f
 		*/
 		void printVector4f();
 		void printlnVector4f();
+		/*
+			methoden zur synchronisation.
+			ein vektor kann immer von meheren lesern
+			gelesen werden, aber nur von einem schreiber
+			bearbeitet werden.
+			die aufrufe sind BLOCKIEREND.
+		*/
+		/*
+			fuer synchronisiertes lesen sollte der kritische
+			bereich in die read methoden eingeschlossen werden.
+		*/
+		void read();
+		void finishRead();
+		/*
+			fuer synchronisiertes schreiben sollte der kritische
+			bereich in die write methoden eingeschlossen werden.
+		*/
+		void write();
+		void finishWrite();
 	private:
 		/*
 			4-elementiges array (dynamische zuweisung wegen adresse).
 		*/
 		float *m_content;
 		uint32_t m_dimension;
+		uint32_t m_readers,m_writer;
+		std::mutex *m_lock;
 };
 
 /*
@@ -173,6 +227,11 @@ void subVector4f(Vector4f* v0, Vector4f* v1, Vector4f* result);
 	kreuzprodukt.
 */
 void crossproductVector4f(Vector4f* v0, Vector4f* v1, Vector4f* result);
+/*
+	multipliziert die gegebene matrix mit dem gegebenen vektor und speichert das 
+	ergebnis im resultvektor.
+*/
+void multiplyVector4fMatrix4f(Vector4f *v0, Matrix4f *m0, Vector4f* result);
 
 /*
 	+-------------------------------------------------------------------+
@@ -238,14 +297,17 @@ void toUnitlengthVectorf(
 
 float scalarproductVector4f(
 		const float *a, 
-		const float *b, 
-		float *c, 
-		uint32_t n
+		const float *b
 		);
-				
+
+float scalarproductVector4f(
+		const __m128 *a, 
+		const __m128 *b
+		);
+		
 void crossproductVector4f(
-		float *a, 
-		float *b, 
+		const float *a, 
+		const float *b, 
 		float *c
 		);
 
@@ -260,4 +322,27 @@ uint32_t equalVectorf(
 		uint32_t n
 		);
 		
+void multiplyMatrix4f(
+		float *m0, 
+		float *m1, 
+		float *m2
+		);
+
+void addMatrix4f(
+		float *m0, 
+		float *m1, 
+		float *m2
+		);
+
+void subMatrix4f(
+		float *m0, 
+		float *m1, 
+		float *m2
+		);		
+		
+void multiplyVector4fMatrix4f(
+		const float *m0, 
+		const float *m1, 
+		float *m2
+		);
 #endif
