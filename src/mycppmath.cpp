@@ -392,8 +392,7 @@ Vector4f::Vector4f()
 Vector4f::Vector4f(
 		float f0,
 		float f1,
-		float f2,
-		float f3
+		float f2
 		)
 {
 	m_dimension = 3;
@@ -401,7 +400,7 @@ Vector4f::Vector4f(
 	m_content[0] = f0;
 	m_content[1] = f1;
 	m_content[2] = f2;
-	m_content[3] = f3;
+	m_content[3] = 0.0f;
 	m_lock = new std::mutex();
 };
 
@@ -457,7 +456,7 @@ Vector4f* Vector4f::operator*(Vector4f &v) 	const
 	return result;
 };
 
-void Vector4f::operator*=(Vector4f &v)
+void Vector4f::operator*=(const Vector4f &v)
 {
 	crossproductVector4f(m_content,v.m_content,m_content);
 };
@@ -512,9 +511,14 @@ Vector4f* Vector4f::operator*(Matrix4f &m) const
 	return v;
 };
 
-void Vector4f::operator*=(Matrix4f &m)
+void Vector4f::operator*=(const Matrix4f &m)
 {
 	multiplyVector4fMatrix4f(m_content,m.content(),m_content);
+};
+
+float Vector4f::get(uint32_t i)
+{
+	return m_content[i];
 };
 
 void Vector4f::read()
@@ -1234,16 +1238,31 @@ float detMatrix4f(
 	return parallelDetMatrix4f(m);
 };
 
+static void genericMultiplyVector4fMatrix4f(
+		float *m0, 
+		float *v0, 
+		float *v1
+		)
+{
+	for(uint32_t i = 0;i < 3;i++, m0 += 4)
+	{
+		v1[i] = genericScalarproduct(m0,v0);
+	}
+};
+
 void multiplyVector4fMatrix4f(
 		float *m0, 
 		float *v0, 
 		float *v1
 		)
 {
-	float *ptrm0 = m0;
-	float *ptrm1 = m1;
-	for(uint32_t i = 0;i < 3;i++, ++ptrm0, ++ptrm1)
+	float tmp[3];
+	for(uint32_t i = 0;i < 3;i++, m0 += 4)
 	{
-		m2[i] = scalarproductVector4f(ptrm0,ptrm1);
+		tmp[i] = scalarproductVector4f(m0,v0);
+	}
+	for(uint32_t i = 0;i < 3;i++)
+	{
+		v1[i] = tmp[i];
 	}
 };	

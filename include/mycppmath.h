@@ -105,8 +105,7 @@ class Vector4f
 		Vector4f(
 				float f0,
 				float f1,
-				float f2,
-				float f3
+				float f2
 				);
 		/*
 			destructor.
@@ -146,10 +145,10 @@ class Vector4f
 		Vector4f* 	operator*	(Vector4f &v) 	const;
 		Vector4f* 	operator*	(Matrix4f &m) 	const;
 		/*
-			weisst du aufrufenden objekt das kreuzprodukt zu.
+			weisst den aufrufenden objekt das kreuzprodukt zu.
 		*/
-		void 		operator*=	(Vector4f &v);
-		void 		operator*=	(Matrix4f &m);
+		void 		operator*=	(const Vector4f &v);
+		void 		operator*=	(const Matrix4f &m);
 		/*
 			zuweisungsoperator.
 		*/
@@ -170,6 +169,7 @@ class Vector4f
 			weisst der position i den float t zu.
 		*/
 		void set(uint32_t i, float t);
+		float get(uint32_t i);
 		/*
 			berechnet den winkel zwischen dem aufrufenden und dem uebergebenen
 			vektor.

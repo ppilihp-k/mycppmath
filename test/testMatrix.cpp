@@ -437,6 +437,19 @@ uint32_t testMatrixDet()
 	return i;
 };
 
+uint32_t testMatrixMultiplyVector()
+{
+	Matrix4f *m = new Matrix4f(1.0f,2.0f,3.0f,4.0f,5.0f,6.0f,7.0f,8.0f,9.0f);
+	Vector4f *v = new Vector4f(1.0f,2.0f,3.0f);
+	Vector4f *r = new Vector4f();
+	multiplyVector4fMatrix4f(m->content(),v->content(),r->content());
+	if(r->get(0) != 14.0f || r->get(1) != 32.0f || r->get(2) != 50.0f)
+	{
+		return 0;
+	}
+	return 1;
+};
+
 int main(int argc,char** argv)
 {
 	uint32_t test = 0;
@@ -460,5 +473,7 @@ int main(int argc,char** argv)
 	printf("Scale: %d\n",test);
 	test = testMatrixDet();
 	printf("Det: %d\n",test);
+	test = testMatrixMultiplyVector();
+	printf("Matrix * Vektor: %d\n",test);
 	return 0;
 };
