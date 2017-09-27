@@ -19,10 +19,6 @@
 	
 */
 
-static __m128 rotationMatrix_X_Row1,rotationMatrix_X_Row2,rotationMatrix_X_Row3;
-static __m128 rotationMatrix_Y_Row1,rotationMatrix_Y_Row2,rotationMatrix_Y_Row3;
-static __m128 rotationMatrix_Z_Row1,rotationMatrix_Z_Row2,rotationMatrix_Z_Row3;
-
 static void initXRotation(float *m, float angle)
 {
 	m[0] = 1.0f;
@@ -99,92 +95,92 @@ static void initializeRotationmatrix(float *m_content, Axis a, float angleX, flo
 	} 
 	else 
 	{
-		float tmp[12];
+		Matrix4f tmp;
 		switch(a)
 		{
 			case 3:
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 4:
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 5:
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 6:
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 7:
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 8:
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 9:
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 10:
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 11:
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 12:
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 13:
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 			case 14:
-				initYRotation(tmp,angleY);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initZRotation(tmp,angleZ);
-				multiplyMatrix4f(m_content,tmp,m_content);
-				initXRotation(tmp,angleX);
-				multiplyMatrix4f(m_content,tmp,m_content);
+				initYRotation(tmp.content(),angleY);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initZRotation(tmp.content(),angleZ);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
+				initXRotation(tmp.content(),angleX);
+				multiplyMatrix4f(m_content,tmp.content(),m_content);
 			break;
 		}
 	}
@@ -324,6 +320,11 @@ void Matrix4f::scale(float scalar)
 float* Matrix4f::content() const 
 {
 	return m_content;
+};
+
+float Matrix4f::det() const
+{
+	return detMatrix4f(m_content);
 };
 
 void Matrix4f::read()
@@ -1180,14 +1181,67 @@ void subMatrix4f(
 	parallelSubMatrix4f(m0,m1,m2);
 };	
 
-void multiplyVector4fMatrix4f(
-		const float *m0, 
-		const float *m1, 
-		float *m2
+static float genericDetMatrix4f(
+		float *m
 		)
 {
-	const float *ptrm0 = m0;
-	const float *ptrm1 = m1;
+		return 	m[0] * m[5] * m[10] + 
+				m[1] * m[6] * m[8] + 
+				m[2] * m[4] * m[9] 
+				- m[2] * m[5] * m[8] 
+				- m[1] * m[4] * m[10] 
+				- m[0] * m[6] * m[9]; 
+};
+
+static float parallelDetMatrix4f(
+		float *m
+		)
+{
+	float result = 0.0f;
+	__m128 row01 = _mm_load_ps(m);
+    __m128 row02 = _mm_load_ps(m + 4);
+    __m128 row03 = _mm_load_ps(m + 8);
+	
+	/*(+) multiplikation der 3 zeilen*/
+	__m128 res0 = _mm_mul_ps(
+							row01,
+							_mm_shuffle_ps(row02, row02, _MM_SHUFFLE(3, 0, 2, 1)));
+	res0 		= _mm_mul_ps(
+							res0,
+							_mm_shuffle_ps(row03, row03, _MM_SHUFFLE(3, 1, 0, 2)));
+							
+	__m128 val = _mm_add_ps(res0, _mm_movehl_ps(res0, res0));
+	result = _mm_cvtss_f32(_mm_add_ss(val, _mm_shuffle_ps(val, val, 1)));	
+	
+	/*(-) multiplikation der 3 zeilen*/
+	__m128 res1 = _mm_mul_ps(
+							_mm_shuffle_ps(row01, row01, _MM_SHUFFLE(3, 0, 1, 2)),
+							_mm_shuffle_ps(row02, row02, _MM_SHUFFLE(3, 2, 0, 1)));
+	res1 		= _mm_mul_ps(
+							res1,
+							_mm_shuffle_ps(row03, row03, _MM_SHUFFLE(3, 1, 2, 0)));
+
+	val = _mm_add_ps(res1, _mm_movehl_ps(res1, res1));
+	result -= _mm_cvtss_f32(_mm_add_ss(val, _mm_shuffle_ps(val, val, 1)));
+	
+	return result;
+};
+
+float detMatrix4f(
+		float *m	
+		)
+{
+	return parallelDetMatrix4f(m);
+};
+
+void multiplyVector4fMatrix4f(
+		float *m0, 
+		float *v0, 
+		float *v1
+		)
+{
+	float *ptrm0 = m0;
+	float *ptrm1 = m1;
 	for(uint32_t i = 0;i < 3;i++, ++ptrm0, ++ptrm1)
 	{
 		m2[i] = scalarproductVector4f(ptrm0,ptrm1);

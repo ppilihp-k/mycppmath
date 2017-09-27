@@ -409,6 +409,34 @@ uint32_t testScale()
 	}
 };
 
+uint32_t testMatrixDet()
+{
+	uint32_t i = 0;
+	Matrix4f *m0 = new Matrix4f(9.0f,7.0f,7.0f,7.0f,9.0f,4.0f,1.0f,2.0f,3.0f);
+	float det = m0->det();
+	if(det == 87.0f)
+	{
+		i = 1;
+	} 
+	else 
+	{
+		printf("Det ist %f, soll %f\n",det,87.0f);
+	}
+	m0->set(2,2,4.0f);
+	m0->set(1,2,10.0f);
+	det = m0->det();
+	if(det == 53.0f)
+	{
+		i = 1;
+	} 
+	else 
+	{
+		printf("Det ist %f, soll %f\n",det,53.0f);
+	}	
+	m0->~Matrix4f();
+	return i;
+};
+
 int main(int argc,char** argv)
 {
 	uint32_t test = 0;
@@ -430,5 +458,7 @@ int main(int argc,char** argv)
 	printf("Equals: %d\n",test);
 	test = testScale();
 	printf("Scale: %d\n",test);
+	test = testMatrixDet();
+	printf("Det: %d\n",test);
 	return 0;
 };
