@@ -19,357 +19,7 @@
 	
 */
 
-static void initXRotation(float *m, float angle)
-{
-	m[0] = 1.0f;
-	m[1] = 0.0f;
-	m[2] = 0.0f;
-	m[3] = 0.0f;
-	m[4] = 0.0f;
-	m[5] = cos(angle) * TODEGREE;
-	m[6] = -sin(angle) * TODEGREE;
-	m[7] = 0.0f;
-	m[8] = 0.0f;
-	m[9] = sin(angle) * TODEGREE;
-	m[10] = cos(angle) * TODEGREE;
-	m[11] = 0.0f;	
-	m[12] = 0.0f;	
-	m[13] = 0.0f;	
-	m[14] = 0.0f;	
-	m[15] = 0.0f;	
-};
 
-static void initYRotation(float *m, float angle)
-{
-	m[0] = cos(angle) * TODEGREE;
-	m[1] = 0.0f;
-	m[2] = sin(angle) * TODEGREE;
-	m[3] = 0.0f;
-	m[4] = 0.0f;
-	m[5] = 1.0f;
-	m[6] = 0.0f;
-	m[7] = 0.0f;
-	m[8] = -sin(angle) * TODEGREE;
-	m[9] = 0.0f;
-	m[10] = cos(angle) * TODEGREE;
-	m[11] = 0.0f;	
-	m[12] = 0.0f;	
-	m[13] = 0.0f;	
-	m[14] = 0.0f;	
-	m[15] = 0.0f;	
-};
-
-static void initZRotation(float *m, float angle)
-{
-	m[0] = cos(angle) * TODEGREE;
-	m[1] = -sin(angle) * TODEGREE;
-	m[2] = 0.0f;
-	m[3] = 0.0f;
-	m[4] = sin(angle) * TODEGREE;
-	m[5] = cos(angle) * TODEGREE;
-	m[6] = 0.0f;
-	m[7] = 0.0f;
-	m[8] = 0.0f;
-	m[9] = 0.0f;
-	m[10] = 1.0f;
-	m[11] = 0.0f;
-	m[12] = 0.0f;	
-	m[13] = 0.0f;	
-	m[14] = 0.0f;	
-	m[15] = 0.0f;		
-};
-
-static void initializeRotationmatrix(float *m_content, Axis a, float angleX, float angleY, float angleZ)
-{
-	if(a == 0)
-	{
-		initXRotation(m_content,angleX);
-	}
-	else if(a == 1)
-	{
-		initYRotation(m_content,angleY);
-	}
-	else if(a == 2)
-	{
-		initZRotation(m_content,angleZ);
-	} 
-	else 
-	{
-		Matrix4f tmp;
-		switch(a)
-		{
-			case 3:
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 4:
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 5:
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 6:
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 7:
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 8:
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 9:
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 10:
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 11:
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 12:
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 13:
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-			case 14:
-				initYRotation(tmp.content(),angleY);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initZRotation(tmp.content(),angleZ);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-				initXRotation(tmp.content(),angleX);
-				multiplyMatrix4f(m_content,tmp.content(),m_content);
-			break;
-		}
-	}
-};
-
-Matrix4f::Matrix4f()
-{
-	m_content = (float*) _aligned_malloc(16 * sizeof(float), 16);
-	for(uint32_t i = 0;i < 16;i++)
-	{
-		m_content[i] = 0.0f;
-	}
-	m_lock = new std::mutex();
-	m_readers = 0;
-	m_writer = 0;
-};
-
-Matrix4f::Matrix4f(
-		float a0,
-		float a1,
-		float a2,
-		float a3,
-		float a4,
-		float a5,
-		float a6,
-		float a7,
-		float a8
-		)
-{
-	m_content = (float*) _aligned_malloc(16 * sizeof(float), 16);	
-	m_content[0] = a0;
-	m_content[1] = a1;
-	m_content[2] = a2;
-	m_content[3] = 0.0f;
-	m_content[4] = a3;
-	m_content[5] = a4;
-	m_content[6] = a5;
-	m_content[7] = 0.0f;
-	m_content[8] = a6;
-	m_content[9] = a7;
-	m_content[10] = a8;
-	m_content[11] = 0.0f;
-	m_content[12] = 0.0f;
-	m_content[13] = 0.0f;
-	m_content[14] = 0.0f;
-	m_content[15] = 0.0f;
-	m_lock = new std::mutex();
-	m_readers = 0;
-	m_writer = 0;
-};
-
-Matrix4f::~Matrix4f()
-{
-	_aligned_free(m_content);
-	m_lock->~mutex();
-};
-
-void Matrix4f::initializeAsRotationmatrix(Axis a, float angleX, float angleY, float angleZ)
-{
-	initializeRotationmatrix(m_content,a,angleX,angleY,angleZ);
-};
-
-float Matrix4f::get(uint32_t row, uint32_t col) const
-{
-	return m_content[row * 4 + col];
-};
-
-void Matrix4f::set(uint32_t row, uint32_t col, float f)
-{
-	m_content[row * 4 + col] = f;
-};
-
-Matrix4f* Matrix4f::operator*(const Matrix4f &m) const
-{
-	Matrix4f* newMatrix = new Matrix4f();
-	multiplyMatrix4f(m_content,m.m_content,newMatrix->m_content);
-	return newMatrix;
-};
-
-void Matrix4f::operator*=(const Matrix4f &m)
-{
-	multiplyMatrix4f(m_content,m.m_content,m_content);
-};
-
-Matrix4f* Matrix4f::operator+(const Matrix4f &m) const
-{
-	Matrix4f* newMatrix = new Matrix4f();
-	addMatrix4f(m_content,m.m_content,newMatrix->m_content);
-	return newMatrix;
-};
-
-void Matrix4f::operator+=(const Matrix4f &m)
-{
-	addMatrix4f(m_content,m.m_content,m_content);
-};
-
-Matrix4f* Matrix4f::operator-(const Matrix4f &m) const
-{
-	Matrix4f* newMatrix = new Matrix4f();
-	subMatrix4f(m_content,m.m_content,newMatrix->m_content);
-	return newMatrix;
-};
-
-void Matrix4f::operator-=(const Matrix4f &m)
-{
-	subMatrix4f(m_content,m.m_content,m_content);
-};
-
-void Matrix4f::operator=(const Matrix4f &m) const
-{
-	float *ptra,*ptrb;
-	ptra = m_content;
-	ptrb = m.m_content;
-	for(uint32_t i = 0;i < 3;i++, ptra += 4, ptrb += 4)
-	{
-		_mm_store_ps(ptra,*((__m128*)ptrb));
-	}
-};
-
-uint32_t Matrix4f::operator==(const Matrix4f &m) const
-{
-	return this == &m ? 0xFFFFFFFF : 0x0;
-};
-
-uint32_t Matrix4f::equals(Matrix4f &m) const
-{
-	return 	equalVectorf(m_content		,m.m_content	,4) && 
-			equalVectorf(m_content + 4	,m.m_content + 4,4) &&
-			equalVectorf(m_content + 8	,m.m_content + 8,4) ? 0xFFFFFFFF : 0x0;
-};
-
-void Matrix4f::scale(float scalar)
-{
-	scaleVectorf(m_content,scalar,12);
-};
-
-float* Matrix4f::content() const 
-{
-	return m_content;
-};
-
-float Matrix4f::det() const
-{
-	return detMatrix4f(m_content);
-};
-
-void Matrix4f::read()
-{
-	uint32_t in = 1;
-	while(in)
-	{
-		m_lock->lock();
-		if(m_writer == 0)
-		{
-			m_readers++;	
-			in = 0;
-		}
-		m_lock->unlock();	
-	}
-};
-
-void Matrix4f::finishRead()
-{
-	m_lock->lock();
-	m_readers--;	
-	m_lock->unlock();	
-};
-
-void Matrix4f::write()
-{
-	uint32_t in = 1;
-	while(in)
-	{
-		m_lock->lock();
-		if(m_readers == 0 && m_writer == 0)
-		{
-			in = 0;
-			m_writer = 1;
-		}
-		m_lock->unlock();
-	}
-};
-
-void Matrix4f::finishWrite()
-{
-	m_lock->lock();
-	m_writer = 0;
-	m_lock->unlock();
-};
 
 /*
 	+-------------------------------------------------------------------+
@@ -379,192 +29,8 @@ void Matrix4f::finishWrite()
 	+-------------------------------------------------------------------+
 	
 */
-Vector4f::Vector4f()
-{
-	m_dimension = 3;
-	/*
-		m_content muss eine 16-byte ausgerichtete adresse haben, damit es von sse und avx profitieren kann!
-	*/
-	m_content = (float*) _aligned_malloc(4 * sizeof(float), 16);
-	m_lock = new std::mutex();
-};
 
-Vector4f::Vector4f(
-		float f0,
-		float f1,
-		float f2
-		)
-{
-	m_dimension = 3;
-	m_content = (float*) _aligned_malloc(4 * sizeof(float), 16);
-	m_content[0] = f0;
-	m_content[1] = f1;
-	m_content[2] = f2;
-	m_content[3] = 0.0f;
-	m_lock = new std::mutex();
-};
-
-Vector4f::~Vector4f()
-{
-	_aligned_free(m_content);
-	m_lock->~mutex();
-};
-
-uint32_t Vector4f::dimension() const
-{
-	return m_dimension;
-};
-
-const float Vector4f::operator[](uint32_t i) const
-{
-	return m_content[i];
-};
-
-void Vector4f::set(uint32_t i, float t)
-{
-	m_content[i] = t;
-};
-
-Vector4f* Vector4f::operator+(Vector4f &v)	const
-{
-	Vector4f *result = new Vector4f();
-	addVectorf(m_content,v.m_content,(*result).m_content,((uint32_t)4));
-	return result;
-};
-
-void Vector4f::operator+=(Vector4f &v)
-{
-	addVectorf(m_content,v.m_content,m_content,((uint32_t)4));
-};
-
-Vector4f* Vector4f::operator-(Vector4f &v) 	const
-{
-	Vector4f *result = new Vector4f();
-	subVectorf(m_content,v.m_content,(*result).m_content,((uint32_t)4));
-	return result;
-};
-
-void Vector4f::operator-=(Vector4f &v)
-{
-	subVectorf(m_content,v.m_content,m_content,((uint32_t)4));
-};
-
-Vector4f* Vector4f::operator*(Vector4f &v) 	const
-{
-	Vector4f* result = new Vector4f();
-	crossproductVector4f(m_content,v.m_content,(*result).m_content);
-	return result;
-};
-
-void Vector4f::operator*=(const Vector4f &v)
-{
-	crossproductVector4f(m_content,v.m_content,m_content);
-};
-
-void Vector4f::scale(float scalar)
-{
-	scaleVectorf(m_content,scalar,4);
-};
-
-void Vector4f::printVector4f()
-{
-	printf("Vector4f<%f,%f,%f,%f>",m_content[0],m_content[1],m_content[2],m_content[3]);
-};
-
-void Vector4f::printlnVector4f()
-{
-	printf("Vector4f<%f,%f,%f,%f>\n",m_content[0],m_content[1],m_content[2],m_content[3]);
-};
-
-void Vector4f::operator=(Vector4f &v)
-{
-	m_content[0] = v.m_content[0];
-	m_content[1] = v.m_content[1];
-	m_content[2] = v.m_content[2];
-	m_content[3] = v.m_content[3];
-};
-
-uint32_t Vector4f::operator==(Vector4f &v)
-{
-	return this == &v ? 0xFFFFFFFF : 0x0;
-};
-
-uint32_t Vector4f::equals(Vector4f &v)
-{
-	return equalVectorf(m_content,v.m_content,4);
-};
-
-float Vector4f::angle(Vector4f &v)
-{
-	return angleVector4f(m_content,v.m_content);
-};
-
-float* Vector4f::content()
-{
-	return m_content;
-};
-
-Vector4f* Vector4f::operator*(Matrix4f &m) const
-{
-	Vector4f *v = new Vector4f();
-	multiplyVector4fMatrix4f(m_content,m.content(),v->content());
-	return v;
-};
-
-void Vector4f::operator*=(const Matrix4f &m)
-{
-	multiplyVector4fMatrix4f(m_content,m.content(),m_content);
-};
-
-float Vector4f::get(uint32_t i)
-{
-	return m_content[i];
-};
-
-void Vector4f::read()
-{
-	uint32_t in = 1;
-	while(in)
-	{
-		m_lock->lock();
-		if(m_writer == 0)
-		{
-			m_readers++;	
-			in = 0;
-		}
-		m_lock->unlock();	
-	}
-};
-
-void Vector4f::finishRead()
-{
-	m_lock->lock();
-	m_readers--;	
-	m_lock->unlock();	
-};
-
-void Vector4f::write()
-{
-	uint32_t in = 1;
-	while(in)
-	{
-		m_lock->lock();
-		if(m_readers == 0 && m_writer == 0)
-		{
-			in = 0;
-			m_writer = 1;
-		}
-		m_lock->unlock();
-	}
-};
-
-void Vector4f::finishWrite()
-{
-	m_lock->lock();
-	m_writer = 0;
-	m_lock->unlock();
-};
-
+/*
 void addVector4f(Vector4f *v0, Vector4f *v1, Vector4f *result)
 {
 	addVectorf(v0->content(),v1->content(),result->content(),4);
@@ -584,6 +50,7 @@ void multiplyVector4fMatrix4f(Vector4f *v0, Matrix4f *m0, Vector4f* result)
 {
 	multiplyVector4fMatrix4f(v0->content(),m0->content(),result->content());
 };
+*/
 /*
 	+-------------------------------------------------------------------+
 	|																	|
@@ -909,8 +376,6 @@ float scalarproductVector4f(
 	__m128 dst = _mm_mul_ps(*a,*b);
 	__m128 res = _mm_add_ps(_mm_permute_ps(_mm_add_ps(_mm_permute_ps(dst, 0x1B), dst), 0xB1), dst);
 	return _mm_cvtss_f32(res);
-	
-	return 0.0f;
 };
 
 /*
@@ -1244,10 +709,15 @@ static void genericMultiplyVector4fMatrix4f(
 		float *v1
 		)
 {
+	float tmp[3];
 	for(uint32_t i = 0;i < 3;i++, m0 += 4)
 	{
-		v1[i] = genericScalarproduct(m0,v0);
+		tmp[i] = genericScalarproduct(m0,v0);
 	}
+	for(uint32_t i = 0;i < 3;i++)
+	{
+		v1[i] = tmp[i];
+	}	
 };
 
 void multiplyVector4fMatrix4f(
@@ -1256,6 +726,14 @@ void multiplyVector4fMatrix4f(
 		float *v1
 		)
 {
+	for(uint32_t i = 0;i < 4;i++)
+	{
+		for(uint32_t j = 0;j < 4;j++)
+		{
+			printf("%f  ",m0[i * 4 + j]);
+		}
+		printf("\n");
+	}
 	float tmp[3];
 	for(uint32_t i = 0;i < 3;i++, m0 += 4)
 	{
@@ -1265,4 +743,5 @@ void multiplyVector4fMatrix4f(
 	{
 		v1[i] = tmp[i];
 	}
+	v1[3] = 0.0f;
 };	
