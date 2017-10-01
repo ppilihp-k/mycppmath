@@ -4,33 +4,15 @@
 /*
 	+-------------------------------------------------------------------+
 	|																	|
-	|								WRAPPER 							|
+	|							C-Style 								|
 	|																	|
 	+-------------------------------------------------------------------+
-	
+
+	für effizientes rechnen sollten die folgenden funktionen genutzt werden!
+	hier muss sich der nutzer selbst um die instantiierung der elementinstanzen kuemmern.
+	So kann vermieden werden, dass unnoetige temporaere instanzen erzeugt werden.
+	(das erzeugen einer objectinstanz von Vector4f oder Matrix4f dauert extrem lange...)
 */
-
-/*
-	+-------------------------------------------------------------------+
-	|																	|
-	|								MATRIX	 							|
-	|																	|
-	+-------------------------------------------------------------------+
-	
-*/
-
-
-
-/*
-	+-------------------------------------------------------------------+
-	|																	|
-	|								VECTOR	 							|
-	|																	|
-	+-------------------------------------------------------------------+
-	
-*/
-
-/*
 void addVector4f(Vector4f *v0, Vector4f *v1, Vector4f *result)
 {
 	addVectorf(v0->content(),v1->content(),result->content(),4);
@@ -50,7 +32,7 @@ void multiplyVector4fMatrix4f(Vector4f *v0, Matrix4f *m0, Vector4f* result)
 {
 	multiplyVector4fMatrix4f(v0->content(),m0->content(),result->content());
 };
-*/
+
 /*
 	+-------------------------------------------------------------------+
 	|																	|
@@ -63,7 +45,7 @@ void multiplyVector4fMatrix4f(Vector4f *v0, Matrix4f *m0, Vector4f* result)
 	
 */
 
-static float* alignAndCopy(const float *a, uint32_t n)
+static float* alignAndCopy16Byte(const float *a, uint32_t n)
 {
 	float *b = (float*) _aligned_malloc(n * sizeof(float), 16);
 	//float b[] __attribute__ ((aligned (16))) = new float[n];
@@ -399,7 +381,8 @@ float scalarproductVector4f(
 {
 	const __m128 dst = _mm_mul_ps(*((__m128*)a),*((__m128*)b));
 	const __m128 val = _mm_add_ps(dst, _mm_movehl_ps(dst, dst));
-	return _mm_cvtss_f32(_mm_add_ss(val, _mm_shuffle_ps(val, val, 1)));
+	float result = _mm_cvtss_f32(_mm_add_ss(val, _mm_shuffle_ps(val, val, 1)));
+	return result;
 };
 
 /*
@@ -726,14 +709,6 @@ void multiplyVector4fMatrix4f(
 		float *v1
 		)
 {
-	for(uint32_t i = 0;i < 4;i++)
-	{
-		for(uint32_t j = 0;j < 4;j++)
-		{
-			printf("%f  ",m0[i * 4 + j]);
-		}
-		printf("\n");
-	}
 	float tmp[3];
 	for(uint32_t i = 0;i < 3;i++, m0 += 4)
 	{
@@ -744,4 +719,5 @@ void multiplyVector4fMatrix4f(
 		v1[i] = tmp[i];
 	}
 	v1[3] = 0.0f;
+	delete[] tmp;
 };	

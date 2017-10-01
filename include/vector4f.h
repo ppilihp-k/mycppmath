@@ -4,6 +4,9 @@
 #include "mycppmath.h"
 #include "matrix4f.h"
 
+#define VECTORMASK ((uint32_t)1) << 32
+#define INVERSEVECTORMASK ~(((uint32_t)1) << 32)
+
 class Matrix4f;
 
 /*
@@ -12,6 +15,8 @@ class Matrix4f;
 class Vector4f 
 {
 	public:
+		Vector4f(Vector4f &&v);
+		Vector4f(const Vector4f &v);
 		/*
 			erzeugt einen Vector4f mit 4 float elementen, die in einem
 			16-byte adress ausgerichteten array abgelegt werden.
@@ -26,6 +31,9 @@ class Vector4f
 			destructor.
 		*/
 		~Vector4f();
+		uint32_t isVertex() const;
+		void setVertex();
+		void setVector();
 		/*
 			gibt die anzahl an elementen zurueck (immer 3).
 		*/
@@ -41,7 +49,7 @@ class Vector4f
 			die methode wird mit der parallelen variante der vektoraddition
 			ausgefuehrt.
 		*/
-		Vector4f* 	operator+	(Vector4f &v)	const;
+		Vector4f& 	operator+	(Vector4f &v)	const;
 		/*
 			analog operator+.
 		*/
@@ -49,7 +57,7 @@ class Vector4f
 		/*
 			analog operator+.
 		*/
-		Vector4f* 	operator-	(Vector4f &v) 	const;
+		Vector4f& 	operator-	(Vector4f &v) 	const;
 		/*
 			analog operator+.
 		*/
@@ -57,8 +65,8 @@ class Vector4f
 		/*
 			liefert das kreuzprodukt zurueck. (LIEFERT DAS KREUZPRODUKT FUER 3F!!!)
 		*/
-		Vector4f* 	operator*	(Vector4f &v) 	const;
-		Vector4f* 	operator*	(Matrix4f &m) 	const;
+		Vector4f& 	operator*	(Vector4f &v) 	const;
+		Vector4f& 	operator*	(Matrix4f &m) 	const;
 		/*
 			weisst den aufrufenden objekt das kreuzprodukt zu.
 		*/
@@ -67,7 +75,8 @@ class Vector4f
 		/*
 			zuweisungsoperator.
 		*/
-		void 		operator=	(Vector4f &v);
+		Vector4f&	operator=	(Vector4f &v);
+		//Vector4f&	operator=	(Vector4f &&v);
 		/*
 			vergleichsoperator. vergleicht die uebergebene referenz mit der eigenen.
 		*/
@@ -116,6 +125,7 @@ class Vector4f
 		*/
 		void write();
 		void finishWrite();
+		std::string toString();
 	private:
 		/*
 			4-elementiges array (dynamische zuweisung wegen adresse).
@@ -123,7 +133,7 @@ class Vector4f
 		float *m_content;
 		uint32_t m_dimension;
 		uint32_t m_readers,m_writer;
-		std::mutex *m_lock;
+		std::mutex m_lock;
 };
 
 #endif

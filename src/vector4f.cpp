@@ -1,7 +1,24 @@
 #include "..\include\vector4f.h"
 //#include "..\include\mycppmath.h"
 
+Vector4f::Vector4f(Vector4f &&v)
+{
+	m_content = v.m_content;
+	m_readers = v.m_readers;
+	m_writer = v.m_writer;
+	m_dimension = 3;
+	delete &v;
+};
 
+Vector4f::Vector4f(const Vector4f &v)
+{
+	m_dimension = 3;
+	m_content = (float*) _aligned_malloc(4 * sizeof(float), 16);
+	m_content[0] = v.m_content[0];
+	m_content[1] = v.m_content[1];
+	m_content[2] = v.m_content[2];
+	m_content[3] = v.m_content[3];	
+};
 
 Vector4f::Vector4f()
 {
@@ -10,7 +27,6 @@ Vector4f::Vector4f()
 		m_content muss eine 16-byte ausgerichtete adresse haben, damit es von sse und avx profitieren kann!
 	*/
 	m_content = (float*) _aligned_malloc(4 * sizeof(float), 16);
-	m_lock = new std::mutex();
 };
 
 Vector4f::Vector4f(
@@ -25,13 +41,27 @@ Vector4f::Vector4f(
 	m_content[1] = f1;
 	m_content[2] = f2;
 	m_content[3] = 0.0f;
-	m_lock = new std::mutex();
 };
 
 Vector4f::~Vector4f()
 {
-	_aligned_free(m_content);
-	m_lock->~mutex();
+	_aligned_free((void*)m_content);
+	//m_lock->~mutex();
+};
+
+uint32_t Vector4f::isVertex() const
+{
+	return m_dimension & VECTORMASK ? 0xFFFFFFFF : 0x0;
+};
+
+void Vector4f::setVertex()
+{
+	m_dimension |= VECTORMASK;
+};
+
+void Vector4f::setVector()
+{
+	m_dimension &= INVERSEVECTORMASK;
 };
 
 uint32_t Vector4f::dimension() const
@@ -49,10 +79,10 @@ void Vector4f::set(uint32_t i, float t)
 	m_content[i] = t;
 };
 
-Vector4f* Vector4f::operator+(Vector4f &v)	const
+Vector4f& Vector4f::operator+(Vector4f &v)	const
 {
-	Vector4f *result = new Vector4f();
-	addVectorf(m_content,v.m_content,(*result).m_content,((uint32_t)4));
+	Vector4f result;
+	addVectorf(m_content,v.m_content,result.m_content,((uint32_t)4));
 	return result;
 };
 
@@ -61,10 +91,10 @@ void Vector4f::operator+=(Vector4f &v)
 	addVectorf(m_content,v.m_content,m_content,((uint32_t)4));
 };
 
-Vector4f* Vector4f::operator-(Vector4f &v) 	const
+Vector4f& Vector4f::operator-(Vector4f &v) 	const
 {
-	Vector4f *result = new Vector4f();
-	subVectorf(m_content,v.m_content,(*result).m_content,((uint32_t)4));
+	Vector4f result;
+	subVectorf(m_content,v.m_content,result.m_content,((uint32_t)4));
 	return result;
 };
 
@@ -73,10 +103,10 @@ void Vector4f::operator-=(Vector4f &v)
 	subVectorf(m_content,v.m_content,m_content,((uint32_t)4));
 };
 
-Vector4f* Vector4f::operator*(Vector4f &v) 	const
+Vector4f& Vector4f::operator*(Vector4f &v) 	const
 {
-	Vector4f* result = new Vector4f();
-	crossproductVector4f(m_content,v.m_content,(*result).m_content);
+	Vector4f result;
+	crossproductVector4f(m_content,v.m_content,result.m_content);
 	return result;
 };
 
@@ -100,14 +130,31 @@ void Vector4f::printlnVector4f()
 	printf("Vector4f<%f,%f,%f,%f>\n",m_content[0],m_content[1],m_content[2],m_content[3]);
 };
 
-void Vector4f::operator=(Vector4f &v)
+Vector4f& Vector4f::operator=(Vector4f &v)
 {
+	if(this == &v){
+		return *this;
+	}
 	m_content[0] = v.m_content[0];
 	m_content[1] = v.m_content[1];
 	m_content[2] = v.m_content[2];
 	m_content[3] = v.m_content[3];
+	return *this;
 };
-
+/*
+Vector4f& Vector4f::operator=(Vector4f &&v)
+{
+	if(this == &v){
+		return *this;
+	}
+	m_content[0] = v.m_content[0];
+	m_content[1] = v.m_content[1];
+	m_content[2] = v.m_content[2];
+	m_content[3] = v.m_content[3];
+	delete &v;
+	return *this;
+};
+*/
 uint32_t Vector4f::operator==(Vector4f &v)
 {
 	return this == &v ? 0xFFFFFFFF : 0x0;
@@ -128,10 +175,10 @@ float* Vector4f::content()
 	return m_content;
 };
 
-Vector4f* Vector4f::operator*(Matrix4f &m) const
+Vector4f& Vector4f::operator*(Matrix4f &m) const
 {
-	Vector4f *v = new Vector4f();
-	multiplyVector4fMatrix4f(m.content(),m_content,v->content());
+	Vector4f v;
+	multiplyVector4fMatrix4f(m.content(),m_content,v.m_content);
 	return v;
 };
 
@@ -150,21 +197,21 @@ void Vector4f::read()
 	uint32_t in = 1;
 	while(in)
 	{
-		m_lock->lock();
+		m_lock.lock();
 		if(m_writer == 0)
 		{
 			m_readers++;	
 			in = 0;
 		}
-		m_lock->unlock();	
+		m_lock.unlock();	
 	}
 };
 
 void Vector4f::finishRead()
 {
-	m_lock->lock();
+	m_lock.lock();
 	m_readers--;	
-	m_lock->unlock();	
+	m_lock.unlock();	
 };
 
 void Vector4f::write()
@@ -172,19 +219,24 @@ void Vector4f::write()
 	uint32_t in = 1;
 	while(in)
 	{
-		m_lock->lock();
+		m_lock.lock();
 		if(m_readers == 0 && m_writer == 0)
 		{
 			in = 0;
 			m_writer = 1;
 		}
-		m_lock->unlock();
+		m_lock.unlock();
 	}
 };
 
 void Vector4f::finishWrite()
 {
-	m_lock->lock();
+	m_lock.lock();
 	m_writer = 0;
-	m_lock->unlock();
+	m_lock.unlock();
+};
+
+std::string Vector4f::toString()
+{
+	return "Vector4f<"+std::to_string(m_content[0])+","+std::to_string(m_content[1])+","+std::to_string(m_content[2])+">";
 };

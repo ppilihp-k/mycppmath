@@ -1,13 +1,40 @@
 #include "..\include\mycppmath.h"
 #include <chrono> 
+#include "..\include\Matrix4f.h"
+#include "..\include\Vector4f.h"
 
 uint32_t testConstructorDestructor()
 {
 	try{
 		Matrix4f *m = new Matrix4f();
-		m->~Matrix4f();		
+		m->set(0,2,1.0f);
+		m->set(1,1,1.0f);
+		m->set(2,0,1.0f);
+		Matrix4f *m1 = new Matrix4f();
+		m1->set(0,0,1.0f);
+		m1->set(1,1,1.0f);
+		m1->set(2,2,1.0f);
+		Matrix4f m3 = *m + *m1;
+		Matrix4f m4;
+		m4 = m3;
+		//Matrix4f m5 = std::move(*m1);
+		Matrix4f m5 = *m1;
+		for(uint32_t i = 0;i < 100000000;i++)
+		{
+			Matrix4f m3 = *m + *m1;
+			if(m3.get(0,0) != 1.0f || m3.get(0,2) != 1.0f || m3.get(1,1) != 2.0f || m3.get(2,0) != 1.0f || m3.get(2,2) != 1.0f)
+			{
+				delete &m3;
+				delete m;
+				delete m1;
+				return 0;
+			}
+			delete &m3;
+		}
+		delete m;
+		delete m1;
 	} 
-	catch (int x)
+	catch (...)
 	{
 		return 0;
 	}
@@ -57,16 +84,16 @@ uint32_t testOperatorPlusAndPlusEquals()
 				m1->set(i,j,2.0f);
 			}
 		}
-		Matrix4f *m2 = *m0 + *m1;
+		Matrix4f m2 = *m0 + *m1;
 		*m0 += *m1;
 		for(uint32_t i = 0;i < 3;i++)
 		{
 			for(uint32_t j = 0;j < 3;j++)
 			{
-				if(m2->get(i,j) != 4.0f || m0->get(i,j) != 4.0f || m1->get(i,j) != 2.0f)
+				if(m2.get(i,j) != 4.0f || m0->get(i,j) != 4.0f || m1->get(i,j) != 2.0f)
 				{
 					printf("i: %d, j: %d\n",i,j);
-					printf("testOperatorPlusAndPlusEquals -- m2->get(%d,%d) = %f, soll 4.0f\n",i,j,m2->get(i,j));
+					printf("testOperatorPlusAndPlusEquals -- m2->get(%d,%d) = %f, soll 4.0f\n",i,j,m2.get(i,j));
 					printf("testOperatorPlusAndPlusEquals -- m1->get(%d,%d) = %f, soll 4.0f\n",i,j,m1->get(i,j));
 					printf("testOperatorPlusAndPlusEquals -- m0->get(%d,%d) = %f, soll 4.0f\n",i,j,m0->get(i,j));
 					broke = 1;
@@ -103,13 +130,13 @@ uint32_t testOperatorPlusAndPlusEquals()
 			{
 				for(uint32_t j = 0;j < 3;j++)
 				{
-						printf("%f\t",m2->get(i,j));
+						printf("%f\t",m2.get(i,j));
 				}
 				printf("\n");
 			}		
 			return 0;
 		}
-		m2->~Matrix4f();
+		m2.~Matrix4f();
 		m0->~Matrix4f();	
 		m1->~Matrix4f();			
 	} 
@@ -135,16 +162,16 @@ uint32_t testOperatorMinusAndMinusEquals()
 				m1->set(i,j,2.0f);
 			}
 		}
-		Matrix4f *m2 = *m0 - *m1;
+		Matrix4f m2 = *m0 - *m1;
 		*m0 -= *m1;
 		for(uint32_t i = 0;i < 3;i++)
 		{
 			for(uint32_t j = 0;j < 3;j++)
 			{
-				if(m2->get(i,j) != 0.0f || m0->get(i,j) != 0.0f || m1->get(i,j) != 2.0f)
+				if(m2.get(i,j) != 0.0f || m0->get(i,j) != 0.0f || m1->get(i,j) != 2.0f)
 				{
 					printf("i: %d, j: %d\n",i,j);
-					printf("testOperatorMinusAndMinusEquals -- m2->get(%d,%d) = %f, soll 0.0f\n",i,j,m2->get(i,j));
+					printf("testOperatorMinusAndMinusEquals -- m2->get(%d,%d) = %f, soll 0.0f\n",i,j,m2.get(i,j));
 					printf("testOperatorMinusAndMinusEquals -- m1->get(%d,%d) = %f, soll 2.0f\n",i,j,m1->get(i,j));
 					printf("testOperatorMinusAndMinusEquals -- m0->get(%d,%d) = %f, soll 0.0f\n",i,j,m0->get(i,j));
 					broke = 1;
@@ -181,13 +208,13 @@ uint32_t testOperatorMinusAndMinusEquals()
 			{
 				for(uint32_t j = 0;j < 3;j++)
 				{
-						printf("%f\t",m2->get(i,j));
+						printf("%f\t",m2.get(i,j));
 				}
 				printf("\n");
 			}	
 			return 0;
 		}
-		m2->~Matrix4f();
+		m2.~Matrix4f();
 		m0->~Matrix4f();	
 		m1->~Matrix4f();			
 	} 
@@ -223,16 +250,16 @@ uint32_t testOperatorMultAndMultEquals()
 				m1->set(i,j,2.0f);
 			}
 		}
-		Matrix4f *m2 = *m0 * *m1;
+		Matrix4f m2 = *m0 * *m1;
 		*m0 *= *m1;
 		for(uint32_t i = 0;i < 3;i++)
 		{
 			for(uint32_t j = 0;j < 3;j++)
 			{
-				if(m2->get(i,j) != 12.0f || m0->get(i,j) != 12.0f || m1->get(i,j) != 2.0f)
+				if(m2.get(i,j) != 12.0f || m0->get(i,j) != 12.0f || m1->get(i,j) != 2.0f)
 				{
 					printf("i: %d, j: %d\n",i,j);
-					printf("testOperatorMultAndMultEquals -- m2->get(%d,%d) = %f, soll 12.0f\n",i,j,m2->get(i,j));
+					printf("testOperatorMultAndMultEquals -- m2->get(%d,%d) = %f, soll 12.0f\n",i,j,m2.get(i,j));
 					printf("testOperatorMultAndMultEquals -- m1->get(%d,%d) = %f, soll 2.0f\n",i,j,m1->get(i,j));
 					printf("testOperatorMultAndMultEquals -- m0->get(%d,%d) = %f, soll 12.0f\n",i,j,m0->get(i,j));
 					broke = 1;
@@ -269,13 +296,13 @@ uint32_t testOperatorMultAndMultEquals()
 			{
 				for(uint32_t j = 0;j < 3;j++)
 				{
-						printf("%f\t",m2->get(i,j));
+						printf("%f\t",m2.get(i,j));
 				}
 				printf("\n");
 			}	
 			return 0;			
 		}
-		m2->~Matrix4f();
+		m2.~Matrix4f();
 		m0->~Matrix4f();	
 		m1->~Matrix4f();			
 	} 
@@ -455,6 +482,7 @@ int main(int argc,char** argv)
 	uint32_t test = 0;
 	test = testConstructorDestructor();
 	printf("Konstruktor und Destruktor: %d\n",test);
+	/*
 	test = testSetGet();
 	printf("Set und Get: %d\n",test);
 	test = testOperatorPlusAndPlusEquals();
@@ -475,5 +503,6 @@ int main(int argc,char** argv)
 	printf("Det: %d\n",test);
 	test = testMatrixMultiplyVector();
 	printf("Matrix * Vektor: %d\n",test);
+	*/	
 	return 0;
 };

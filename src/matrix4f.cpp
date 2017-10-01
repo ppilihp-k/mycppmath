@@ -177,7 +177,7 @@ Matrix4f::Matrix4f()
 	{
 		m_content[i] = 0.0f;
 	}
-	m_lock = new std::mutex();
+	//m_lock = std::mutex();
 	m_readers = 0;
 	m_writer = 0;
 };
@@ -194,7 +194,7 @@ Matrix4f::Matrix4f(
 		float a8
 		)
 {
-	m_content = (float*) _aligned_malloc(16 * sizeof(float), 16);	
+	m_content = (float*) _aligned_malloc(16 * sizeof(float), 16);
 	m_content[0] = a0;
 	m_content[1] = a1;
 	m_content[2] = a2;
@@ -211,15 +211,35 @@ Matrix4f::Matrix4f(
 	m_content[13] = 0.0f;
 	m_content[14] = 0.0f;
 	m_content[15] = 0.0f;
-	m_lock = new std::mutex();
+	//m_lock = std::mutex();
 	m_readers = 0;
 	m_writer = 0;
+	
+};
+
+Matrix4f::Matrix4f(const Matrix4f &m)
+{
+	m_content = (float*) _aligned_malloc(16 * sizeof(float), 16);
+	for(uint32_t i = 0;i < 16;i++)
+	{
+		m_content[i] = m.m_content[i];
+	}
+	m_readers = m.m_readers;
+	m_writer = m.m_writer;
+};
+
+Matrix4f::Matrix4f(Matrix4f&& m)
+{
+	m_content = m.m_content;
+	m_readers = m.m_readers;
+	m_writer = m.m_writer;
+	delete &m;
 };
 
 Matrix4f::~Matrix4f()
 {
-	_aligned_free(m_content);
-	m_lock->~mutex();
+	_aligned_free(((void*)m_content));
+	//m_lock->~mutex();
 };
 /*
 void Matrix4f::initializeAsRotationmatrix(Axis a, float angleX, float angleY, float angleZ)
@@ -237,17 +257,17 @@ void Matrix4f::set(uint32_t row, uint32_t col, float f)
 	m_content[row * 4 + col] = f;
 };
 
-Matrix4f* Matrix4f::operator*(const Matrix4f &m) const
+Matrix4f& Matrix4f::operator*(const Matrix4f &m) const
 {
-	Matrix4f* newMatrix = new Matrix4f();
-	multiplyMatrix4f(m_content,m.m_content,newMatrix->m_content);
+	Matrix4f newMatrix;
+	multiplyMatrix4f(m_content,m.m_content,newMatrix.m_content);
 	return newMatrix;
 };
 
-Vector4f* Matrix4f::operator*(Vector4f &m) const
+Vector4f& Matrix4f::operator*(Vector4f &m) const
 {
-	Vector4f *v = new Vector4f();
-	multiplyVector4fMatrix4f(m_content,m.content(),v->content());
+	Vector4f v;
+	multiplyVector4fMatrix4f(m_content,m.content(),v.content());
 	return v;	
 };
 
@@ -256,10 +276,11 @@ void Matrix4f::operator*=(const Matrix4f &m)
 	multiplyMatrix4f(m_content,m.m_content,m_content);
 };
 
-Matrix4f* Matrix4f::operator+(const Matrix4f &m) const
+Matrix4f& Matrix4f::operator+(const Matrix4f &m) const
 {
-	Matrix4f* newMatrix = new Matrix4f();
-	addMatrix4f(m_content,m.m_content,newMatrix->m_content);
+	//Matrix4f *newMatrix = new Matrix4f();
+	Matrix4f newMatrix;
+	addMatrix4f(m_content,m.m_content,newMatrix.m_content);
 	return newMatrix;
 };
 
@@ -268,10 +289,10 @@ void Matrix4f::operator+=(const Matrix4f &m)
 	addMatrix4f(m_content,m.m_content,m_content);
 };
 
-Matrix4f* Matrix4f::operator-(const Matrix4f &m) const
+Matrix4f& Matrix4f::operator-(const Matrix4f &m) const
 {
-	Matrix4f* newMatrix = new Matrix4f();
-	subMatrix4f(m_content,m.m_content,newMatrix->m_content);
+	Matrix4f newMatrix;
+	subMatrix4f(m_content,m.m_content,newMatrix.m_content);
 	return newMatrix;
 };
 
@@ -280,8 +301,12 @@ void Matrix4f::operator-=(const Matrix4f &m)
 	subMatrix4f(m_content,m.m_content,m_content);
 };
 
-void Matrix4f::operator=(const Matrix4f &m) const
+Matrix4f& Matrix4f::operator=(const Matrix4f &m)
 {
+	if(this == &m)
+	{
+		return *this;
+	}
 	float *ptra,*ptrb;
 	ptra = m_content;
 	ptrb = m.m_content;
@@ -289,8 +314,29 @@ void Matrix4f::operator=(const Matrix4f &m) const
 	{
 		_mm_store_ps(ptra,*((__m128*)ptrb));
 	}
+	
+	return *this;
 };
-
+/*
+Matrix4f& Matrix4f::operator=(Matrix4f &&m)
+{
+	printf("operator=(Matrix4f &&m)\n");
+	
+	if(this == &m)
+	{
+		return *this;
+	}
+	
+	_aligned_free(((void*)m_content));
+	//delete &m.m_lock;
+	
+	m_content = m.m_content;
+	m_readers = m.m_readers;
+	m_writer = m.m_writer;
+	
+	return *this;
+};
+*/
 uint32_t Matrix4f::operator==(const Matrix4f &m) const
 {
 	return this == &m ? 0xFFFFFFFF : 0x0;
@@ -323,21 +369,21 @@ void Matrix4f::read()
 	uint32_t in = 1;
 	while(in)
 	{
-		m_lock->lock();
+		m_lock.lock();
 		if(m_writer == 0)
 		{
 			m_readers++;	
 			in = 0;
 		}
-		m_lock->unlock();	
+		m_lock.unlock();	
 	}
 };
 
 void Matrix4f::finishRead()
 {
-	m_lock->lock();
+	m_lock.lock();
 	m_readers--;	
-	m_lock->unlock();	
+	m_lock.unlock();	
 };
 
 void Matrix4f::write()
@@ -345,19 +391,24 @@ void Matrix4f::write()
 	uint32_t in = 1;
 	while(in)
 	{
-		m_lock->lock();
+		m_lock.lock();
 		if(m_readers == 0 && m_writer == 0)
 		{
 			in = 0;
 			m_writer = 1;
 		}
-		m_lock->unlock();
+		m_lock.unlock();
 	}
 };
 
 void Matrix4f::finishWrite()
 {
-	m_lock->lock();
+	m_lock.lock();
 	m_writer = 0;
-	m_lock->unlock();
+	m_lock.unlock();
+};
+
+std::string Matrix4f::toString()
+{
+	return "Matrix4f<<"+std::to_string(m_content[0])+","+std::to_string(m_content[1])+","+std::to_string(m_content[2])+">,<"+std::to_string(m_content[4])+","+std::to_string(m_content[5])+","+std::to_string(m_content[6])+">,<"+std::to_string(m_content[8])+","+std::to_string(m_content[9])+","+std::to_string(m_content[10])+">>";
 };

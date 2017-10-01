@@ -3,14 +3,19 @@
 
 #include "include.h"
 #include "immintrin.h"
+#include "matrix4f.h"
+#include "vector4f.h"
 
-#define PI 					3.14159265f
-#define TODEGREE 			180.0f / PI
-#define TORADIANS			PI / 180.0f
-#define INVERSE360  		1.0f / 360.0f
-#define INVFOUR				1.0f / 4.0f
-#define INVEIGHT			1.0f / 8.0f
-#define INVSIXTEEN  		1.0f / 16.0f
+#define PI			3.14159265f
+#define TODEGREE	180.0f / PI
+#define TORADIANS	PI / 180.0f
+#define INVERSE360  1.0f / 360.0f
+#define INVFOUR		1.0f / 4.0f
+#define INVEIGHT	1.0f / 8.0f
+#define INVSIXTEEN  1.0f / 16.0f
+
+class Matrix4f;
+class Vector4f;
 
 /*
 	+-------------------------------------------------------------------+
