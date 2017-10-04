@@ -130,7 +130,7 @@ void Vector4f::printlnVector4f()
 	printf("Vector4f<%f,%f,%f,%f>\n",m_content[0],m_content[1],m_content[2],m_content[3]);
 };
 
-Vector4f& Vector4f::operator=(Vector4f &v)
+Vector4f& Vector4f::operator=(const Vector4f &v)
 {
 	if(this == &v){
 		return *this;

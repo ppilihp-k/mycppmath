@@ -75,7 +75,7 @@ class Vector4f
 		/*
 			zuweisungsoperator.
 		*/
-		Vector4f&	operator=	(Vector4f &v);
+		Vector4f&	operator=	(const Vector4f &v);
 		//Vector4f&	operator=	(Vector4f &&v);
 		/*
 			vergleichsoperator. vergleicht die uebergebene referenz mit der eigenen.
@@ -135,5 +135,7 @@ class Vector4f
 		uint32_t m_readers,m_writer;
 		std::mutex m_lock;
 };
+
+using Vertex4f = Vector4f;
 
 #endif
