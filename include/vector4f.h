@@ -100,7 +100,7 @@ class Vector4f
 		*/
 		float angle(Vector4f &v);
 		
-		float* content();
+		float* content() const;
 		/*
 			vektor in der konsole ausgeben.
 		*/

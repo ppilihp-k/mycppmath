@@ -97,7 +97,7 @@ Vector4f* Triangle::getVertecies()
 	return m_vertecies;
 };
 
-Vertex4f& Triangle::getAreaNormal()
+Vertex4f& Triangle::getPlaneNormal()
 {
 	return m_areaNormal;
 };
@@ -128,4 +128,14 @@ void Triangle::finishWrite()
 	m_vertecies[0].finishWrite();
 	m_vertecies[1].finishWrite();
 	m_vertecies[2].finishWrite();	
+};
+
+float Triangle::getRadius()
+{
+	return m_radius;
+};
+
+Vertex4f& Triangle::getMidvertex()
+{
+	return m_avgmidvertex;
 };

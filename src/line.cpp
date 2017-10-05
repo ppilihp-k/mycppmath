@@ -36,12 +36,12 @@ Line* Line::operator=(Line &&l)
 	
 };
 */
-Vertex4f& Line::getPosition()
+Vertex4f& Line::getPosition() 
 {
 	return m_vertex;
 };
 
-Vector4f& Line::getDirection()
+Vector4f& Line::getDirection() 
 {
 	return m_direction;
 };

@@ -170,7 +170,7 @@ float Vector4f::angle(Vector4f &v)
 	return angleVector4f(m_content,v.m_content);
 };
 
-float* Vector4f::content()
+float* Vector4f::content() const
 {
 	return m_content;
 };

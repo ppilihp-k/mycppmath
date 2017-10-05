@@ -197,8 +197,8 @@ void addVectorf(
 	serielle hilfsfunktion für die subtraktion
 */
 static void genericSubVectorf(
-		float *a, 
-		float *b, 
+		const float *a, 
+		const float *b, 
 		float *c, 
 		uint32_t n
 		)
@@ -212,8 +212,8 @@ static void genericSubVectorf(
 	generische subtraktion eines einzelnen vektors.
 */
 void subVectorf(
-		float *a, 
-		float *b, 
+		const float *a, 
+		const float *b, 
 		float *c,
 		uint32_t n1
 		)
@@ -721,3 +721,14 @@ void multiplyVector4fMatrix4f(
 	v1[3] = 0.0f;
 	delete[] tmp;
 };	
+
+void copyVector4f(
+		float* f0, 
+		const float* f1
+		)
+{
+	for(uint32_t i = 0;i < 4;i++)
+	{
+		f0[i] = f1[i];
+	}
+};

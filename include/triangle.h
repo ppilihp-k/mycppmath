@@ -14,7 +14,8 @@ class Triangle
 		Triangle& operator=(Triangle&& t);
 		Vertex4f* getVertecies();
 		Vertex4f& getMidvertex();
-		Vertex4f& getAreaNormal();
+		Vertex4f& getPlaneNormal();
+		float getRadius();
 		/*
 			fuer synchronisiertes lesen sollte der kritische
 			bereich in die read methoden eingeschlossen werden.
@@ -33,7 +34,7 @@ class Triangle
 		*/
 		Vertex4f m_vertecies[3];
 		Vertex4f m_avgmidvertex;
-		Vector4f m_radius;	
+		float m_radius;	
 		Vertex4f m_areaNormal;
 };
 #endif

@@ -84,8 +84,8 @@ void subVectorf(
 	rueckgabewert:	-					
 */	
 void subVectorf(
-		float *a, 
-		float *b, 
+		const float *a, 
+		const float *b, 
 		float *c,
 		uint32_t n1
 		);
@@ -237,4 +237,9 @@ void multiplyVector4fMatrix4f(
 		float *v1
 		);
 
+		
+void copyVector4f(
+		float* f0, 
+		const float* f1
+		);
 #endif

@@ -12,13 +12,11 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -c")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -m64 -march=native")
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -m32 -march=native")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -m64 -march=native")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -m32 -march=native -shared")
 
 #header
 include_directories(../include)
 
 #cpp
-set(SRC ../src/mycppmath.cpp ../test/test.cpp)
-
-add_executable(MYCPPMATH ${SRC})
+add_library(MYCPPMATH SHARED ../src/geometrie.cpp ../src/mycppmath.cpp ../src/matrix4f.cpp ../src/vector4f.cpp ../src/triangle.cpp ../src/line.cpp ../src/plane.cpp ../src/polygon.cpp ../test/testMatrix.cpp)
