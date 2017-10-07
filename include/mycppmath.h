@@ -242,4 +242,6 @@ void copyVector4f(
 		float* f0, 
 		const float* f1
 		);
+		
+uint32_t sign(float f);
 #endif

@@ -46,6 +46,11 @@ Vector4f& Line::getDirection()
 	return m_direction;
 };
 
+std::string Line::toString()
+{
+	return "Line{\n\tposition:"+m_vertex.toString()+",\n\tdirection:"+m_direction.toString()+"\n}";
+};
+
 Linesegment::Linesegment()
 {
 	
@@ -80,4 +85,9 @@ Vertex4f& Linesegment::getVertex0()
 Vertex4f& Linesegment::getVertex1()
 {
 	return m_vertex1;
+};
+
+std::string Linesegment::toString()
+{
+	return "Linesegment{\n\tvertex_0:"+getPosition().toString()+",\n\tvertex_1:"+m_vertex1.toString()+"direction:"+getDirection().toString()+"\n}";
 };

@@ -3,7 +3,7 @@
 static void calculateAvgMidvertex(Triangle &t)
 {
 	Vector4f* vertecies = t.getVertecies();
-	Vector4f  avgMidvertex = t.getMidvertex();
+	Vector4f  avgMidvertex = t.getCentroidVertex();
 	addVectorf(
 		vertecies[0].content(),
 		vertecies[1].content(),
@@ -20,7 +20,7 @@ static void calculateAvgMidvertex(Triangle &t)
 static void calculateRadius(Triangle &t)
 {
 	Vertex4f* vertecies = t.getVertecies();
-	Vertex4f avgMidvertex = t.getMidvertex();
+	Vertex4f avgMidvertex = t.getCentroidVertex();
 	Vector4f dv_max, dv_tmp;
 	subVectorf(vertecies[0].content(),avgMidvertex.content(),dv_max.content(),4);
 	for(uint32_t i = 1;i < 3;i++)
@@ -52,7 +52,7 @@ Triangle::Triangle(const Triangle &t)
 	m_vertecies[0] = t.m_vertecies[0];
 	m_vertecies[1] = t.m_vertecies[1];
 	m_vertecies[2] = t.m_vertecies[2];
-	m_avgmidvertex = t.m_avgmidvertex;
+	m_centroidVertex = t.m_centroidVertex;
 	m_radius = t.m_radius;
 	m_areaNormal = t.m_areaNormal;
 };
@@ -71,7 +71,7 @@ Triangle& Triangle::operator=(const Triangle& t)
 	m_vertecies[0] = t.m_vertecies[0];
 	m_vertecies[1] = t.m_vertecies[1];
 	m_vertecies[2] = t.m_vertecies[2];
-	m_avgmidvertex = t.m_avgmidvertex;
+	m_centroidVertex = t.m_centroidVertex;
 	m_radius = t.m_radius;
 	m_areaNormal = t.m_areaNormal;	
 	return *this;
@@ -86,7 +86,7 @@ Triangle& Triangle::operator=(Triangle&& t)
 	m_vertecies[0] = t.m_vertecies[0];
 	m_vertecies[1] = t.m_vertecies[1];
 	m_vertecies[2] = t.m_vertecies[2];
-	m_avgmidvertex = t.m_avgmidvertex;
+	m_centroidVertex = t.m_centroidVertex;
 	m_radius = t.m_radius;
 	m_areaNormal = t.m_areaNormal;	
 	return *this;	
@@ -135,7 +135,18 @@ float Triangle::getRadius()
 	return m_radius;
 };
 
-Vertex4f& Triangle::getMidvertex()
+Vertex4f& Triangle::getCentroidVertex()
 {
-	return m_avgmidvertex;
+	return m_centroidVertex;
+};
+
+std::string Triangle::toString()
+{
+	return "Triangle{\n\tcentroid:"+
+			m_centroidVertex.toString()+",\n\t"+
+			"radius:"+std::to_string(m_radius)+",\n\t"+
+			"normal:"+m_areaNormal.toString()+",\n\t"+
+			"vertex_0:"+m_vertecies[0].toString()+",\n\t"+
+			"vertex_1:"+m_vertecies[1].toString()+",\n\t"+
+			"vertex_2:"+m_vertecies[2].toString()+"}";
 };

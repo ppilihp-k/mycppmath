@@ -293,7 +293,7 @@ float genericLengthVectorf(const float *a, uint32_t n)
 {
 	float result = 0.0f;
 	for(uint32_t i = 0;i < n;i++){
-		result += a[i];
+		result += pow(a[i],2);
 	}
 	return sqrt(result);
 };
@@ -731,4 +731,13 @@ void copyVector4f(
 	{
 		f0[i] = f1[i];
 	}
+};
+
+uint32_t sign(float f)
+{
+	if(f < 0)
+	{
+		return false;
+	}
+	return true;
 };

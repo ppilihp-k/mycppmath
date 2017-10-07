@@ -11,53 +11,12 @@
 #include <math.h>
 
 enum MathStatus {PARALLEL = 0, SCHNITT = 1, IDENTITAET = 2, KEINSCHNITT = 3};
-/*
-	beschreibung: 	erstllt einen neuen vektor mit dem "new"-operator und gibt ihr zurueck.
-	bedingungen: 	-
-	parameter:		-
-	rueckgabewert:	ein neuer vektor, der von dieser bibliothek verwaltet wird.					
-*/
-Vector4f& allocateVector4f();
-/*
-	beschreibung: 	loescht den gegebenen vektor oder nutzt ihn weiter, je nachdem wie er benoetigt wird.
-	bedingungen: 	-
-	parameter:		ein vector4f, der nicht mehr gebraucht wird.
-	rueckgabewert:	-				
-*/
-void deallocateVector4f(Vector4f &v);
-/*
-	beschreibung: 	erstllt einen neuen vertex mit dem "new"-operator und gibt ihr zurueck.
-	bedingungen: 	-
-	parameter:		-
-	rueckgabewert:	ein neuer vertex, der von dieser bibliothek verwaltet wird.					
-*/
-Vertex4f& allocateVertex4f();
-/*
-	beschreibung: 	loescht den gegebenen vertex oder nutzt ihn weiter, je nachdem wie er benoetigt wird.
-	bedingungen: 	-
-	parameter:		ein vertex, der nicht mehr gebraucht wird.
-	rueckgabewert:	-				
-*/
-void deallocateVertex4f(Vertex4f &v);
-/*
-	beschreibung: 	erstllt eine neue matrix4f mit dem "new"-operator und gibt ihr zurueck.
-	bedingungen: 	-
-	parameter:		-
-	rueckgabewert:	eine neue matrix4f, der von dieser bibliothek verwaltet wird.					
-*/
-Matrix4f allocateMatrix4f();
-/*
-	beschreibung: 	loescht die gegebene matrix4f oder nutzt ihn weiter, je nachdem wie er benoetigt wird.
-	bedingungen: 	-
-	parameter:		eine matrix4f, die nicht mehr gebraucht wird.
-	rueckgabewert:	-				
-*/
-void  deallocateMatrix4f(Matrix4f &m);
+
 /*
 	beschreibung: 	testet die lagebeziehung von einem punkt zu einer ebene.
 	bedingungen: 	-
-	parameter:		m0 und m1 sind die mittelpunkte der jeweiligen kugeln und r0 bzw. r1 die zugehoeruigen radien.
-	rueckgabewert:	SCHNITT, wenn sie die spheren schneiden, IDENTITAET, wenn m0 = m1 und r0 = r1, KEINSCHNITT sonst.		
+	parameter:		v, der punkt, welcher getestet werden soll, p der stuetzvektor der ebene und n dessen normalenvektor.
+	rueckgabewert:	einen wert x >= 0, wenn v in (v - p) o n = 0, x < 0 sonst.	
 */
 float testPositiveHalfPlane(
 		Vertex4f& v, 

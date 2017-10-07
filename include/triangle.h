@@ -13,7 +13,7 @@ class Triangle
 		Triangle& operator=(const Triangle& t);
 		Triangle& operator=(Triangle&& t);
 		Vertex4f* getVertecies();
-		Vertex4f& getMidvertex();
+		Vertex4f& getCentroidVertex();
 		Vertex4f& getPlaneNormal();
 		float getRadius();
 		/*
@@ -28,12 +28,16 @@ class Triangle
 		*/
 		void write();
 		void finishWrite();
+		std::string toString();
 	private:
 		/*
 			stuetzvektoren fuer das dreieck.
 		*/
 		Vertex4f m_vertecies[3];
-		Vertex4f m_avgmidvertex;
+		/*
+			schwerpunkt des dreiecks.
+		*/
+		Vertex4f m_centroidVertex;
 		float m_radius;	
 		Vertex4f m_areaNormal;
 };

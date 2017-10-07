@@ -15,6 +15,7 @@ class Line
 		Vector4f& getDirection();
 		Line& operator=(Line &l);
 		//Line* operator=(Line &&l);
+		std::string toString();
 	private:
 		Vertex4f m_vertex;
 		Vector4f m_direction;
@@ -29,6 +30,7 @@ class Linesegment : public Line
 		Linesegment& operator=(Linesegment &l);
 		Vertex4f& getVertex0();
 		Vertex4f& getVertex1();
+		std::string toString();
 	private:
 		Vertex4f m_vertex1;
 };

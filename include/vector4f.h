@@ -3,6 +3,8 @@
 
 #include "mycppmath.h"
 #include "matrix4f.h"
+#include <thread> 
+#include <chrono>
 
 #define VECTORMASK ((uint32_t)1) << 32
 #define INVERSEVECTORMASK ~(((uint32_t)1) << 32)
@@ -76,7 +78,7 @@ class Vector4f
 			zuweisungsoperator.
 		*/
 		Vector4f&	operator=	(const Vector4f &v);
-		//Vector4f&	operator=	(Vector4f &&v);
+		Vector4f&	operator=	(Vector4f &&v);
 		/*
 			vergleichsoperator. vergleicht die uebergebene referenz mit der eigenen.
 		*/
@@ -126,6 +128,8 @@ class Vector4f
 		void write();
 		void finishWrite();
 		std::string toString();
+		static void startSmartAllocator();
+		static void terminateSmartAllocator();
 	private:
 		/*
 			4-elementiges array (dynamische zuweisung wegen adresse).
