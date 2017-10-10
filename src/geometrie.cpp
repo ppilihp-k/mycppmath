@@ -62,7 +62,7 @@ static float genericIntersectLineWithPlane(
 		const Vector4f& normalPlane
 		)
 {
-	float nominator, denominator, scalar;
+	float nominator, denominator;
 	
 	nominator = 		positionPlane[0] * normalPlane[0] + positionPlane[1] * normalPlane[1] + positionPlane[2] * normalPlane[2]
 					-	positionLine[0] * normalPlane[0] - positionLine[1] * normalPlane[1] - positionLine[2] * normalPlane[2];
@@ -70,6 +70,24 @@ static float genericIntersectLineWithPlane(
 	denominator = 		directionalLine[0] * normalPlane[0] + directionalLine[1] * normalPlane[1] + directionalLine[2] * normalPlane[2];
 	
 	return denominator == 0.0f ? 0.0f : nominator / denominator;
+};
+
+static float parallelIntersectionLineWithPlane(
+		const Vertex4f& positionLine,
+		const Vector4f& directionalLine,
+		const Vertex4f& positionPlane,
+		const Vector4f& normalPlane
+		)
+{
+	float nominator, denominator;
+	__m128 m;
+	m = _mm_mul_ps(*((__m128*)positionPlane.content()),*((__m128*)normalPlane.content()));
+	nominator = _mm_cvtss_f32(_mm_add_ss(m, _mm_shuffle_ps(m, m, 1)));
+	m = _mm_mul_ps(*((__m128*)positionLine.content()),*((__m128*)normalPlane.content()));
+	nominator -= _mm_cvtss_f32(_mm_add_ss(m, _mm_shuffle_ps(m, m, 1)));
+	m = _mm_mul_ps(*((__m128*)directionalLine.content()),*((__m128*)normalPlane.content()));
+	denominator = _mm_cvtss_f32(_mm_add_ss(m, _mm_shuffle_ps(m, m, 1)));
+	return denominator == 0.0f ? 0.0f : nominator / denominator; 
 };
 
 Vertex4f& intersectLineWithPlane(
@@ -82,7 +100,7 @@ Vertex4f& intersectLineWithPlane(
 	/*
 		das sollte noch parallelisiert werden!
 	*/
-	float scalar = genericIntersectLineWithPlane(positionLine, directionalLine, positionPlane, normalPlane);
+	float scalar = parallelIntersectionLineWithPlane(positionLine, directionalLine, positionPlane, normalPlane);
 	Vector4f newDirectional;
 	copyVector4f(newDirectional.content(),directionalLine.content());
 	newDirectional.scale(scalar);
@@ -160,7 +178,8 @@ Linesegment& intersect(Triangle &t0, Triangle &t1) throw (MathStatus)
 			/*
 				schnittpunkte berechnen
 			*/
-			Vector4f r = t0Bot0 - t0Top0;
+			Vector4f r;
+			r = t0Bot0 - t0Top0;
 			Vertex4f s0;
 			s0 = intersectLineWithPlane(t0Top0, r, t10, t1.getPlaneNormal());
 			r = t0Bot0 - t0Top1;
@@ -287,4 +306,73 @@ float testPositiveHalfPlane(
 	Vector4f tmp;
 	tmp	= v - p;
 	return  scalarproductVector4f(tmp.content(),n.content());
+};
+
+Linesegment& naivIntersectionBetweenPolygons(
+		Polygon &p0, 
+		Polygon &p1
+		)
+{
+	
+};
+
+static float minDistanceBetweenVertecies(Triangle &t0, Triangle &t1)
+{
+	float minDistance = std::numeric_limits<float>::max();
+	float tmp;
+	Vector4f distance;
+	for(uint32_t i = 0;i < 3;i++)
+	{
+		for(uint32_t j = 0;j < 3;j++)
+		{
+			distance = t0.getVertecies()[i] - t0.getVertecies()[j];
+			tmp = lengthVectorf(distance.content(),4);
+			if(minDistance > tmp)
+			{
+				minDistance = tmp;
+			}
+		}
+	}
+	return minDistance;
+};
+
+Linesegment& intersect(Polygon &p0, Polygon &p1) throw (MathStatus)
+{
+	/*
+		naiv:
+		dmin;
+		i,j;
+		foreach ti aus p0 do
+			foreach tj aus p1 do
+				if ||t0-t1|| < dmin then 
+					dmin = ||t0-t1||;
+					i = ti;
+					j = tj;
+		return intersect(i,j);
+		
+		plane sweep:
+	*/
+	Vector4f tmp;
+	tmp = p0.getCentroidVertex() - p1.getCentroidVertex();
+	if(lengthVectorf(tmp.content(),3) < p0.getRadius() + p1.getRadius())
+	{
+		float tmp;
+		float distance = std::numeric_limits<float>::max();
+		Triangle t0,t1;
+		for(uint32_t i = 0;i < p0.size();i++)
+		{
+			for(uint32_t j = 0;j < p1.size();j++)
+			{
+				tmp = minDistanceBetweenVertecies(p0.getTriangles()[i], p1.getTriangles()[j]);
+				if(tmp < distance)
+				{
+					distance = tmp;
+					t0 = p0.getTriangles()[i];
+					t1 = p1.getTriangles()[j];
+				}
+			}		
+		}
+		return intersect(t0,t1);		
+	}
+	throw KEINSCHNITT;
 };

@@ -82,7 +82,7 @@ Linesegment& intersect(Triangle &t0, Triangle &t1) throw (MathStatus);
 	rueckgabewert:	die schnittgerade der zwei dreiecke t0 und t1, dere abstand minimal ist, wenn sie sich schneiden.
 	throws:			MathStatus.KEINSCHNITT, wenn die dreiecke keine gemeinsamen punkte beitzen.
 */		
-Linesegment& intersect(Polygon &p0, Polygon &p1);
+Linesegment& intersect(Polygon &p0, Polygon &p1) throw (MathStatus);
 
 Linesegment& intersect(Plane &p0, Plane &p1);
 
