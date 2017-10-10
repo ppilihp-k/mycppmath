@@ -54,16 +54,35 @@ Vertex4f& intersectLineWithPlane(
 		const Plane &p
 		);
 
+/*
+	beschreibung: 	berechnet den schnittpunkt einer geraden mit einer ebene.
+	bedingungen: 	die gerade muss die ebene schneiden, sonst ist das ergebnis undefiniert.
+	parameter:		eine gerade l und einen ebene p.
+	rueckgabewert:	den schnittpunkt v der gerade l mit der ebene p.
+*/
 Vertex4f& intersectLineWithPlane(
 		const Vertex4f& positionLine,
 		const Vector4f& directionalLine,
 		const Vertex4f& positionPlane,
 		const Vector4f& normalPlane
 		);
-		
-std::list<Linesegment> intersect(Polygon &p0, Polygon &p1);
-
+/*
+	beschreibung: 	berechnet den schnittpunkt zweier dreiecke miteinander.
+	bedingungen: 	-
+	parameter:		zwei dreiecke t0 und t1.
+	rueckgabewert:	die schnittgerade der zwei dreiecke, wenn sie sich schneiden.
+	throws:			MathStatus.KEINSCHNITT, wenn die dreiecke keine gemeinsamen punkte beitzen.
+*/
 Linesegment& intersect(Triangle &t0, Triangle &t1) throw (MathStatus);
+/*
+	beschreibung: 	berechnet den schnittpunkt zweier dreiecke t0 und t1 aus dem polygon p0 bzw p1 miteinander.
+					t0 und t1 sind diejenigen dreiecke, deren abstand zueinander am kleinsten ist.
+	bedingungen: 	-
+	parameter:		zwei polygone p0 und p1.
+	rueckgabewert:	die schnittgerade der zwei dreiecke t0 und t1, dere abstand minimal ist, wenn sie sich schneiden.
+	throws:			MathStatus.KEINSCHNITT, wenn die dreiecke keine gemeinsamen punkte beitzen.
+*/		
+Linesegment& intersect(Polygon &p0, Polygon &p1);
 
 Linesegment& intersect(Plane &p0, Plane &p1);
 
