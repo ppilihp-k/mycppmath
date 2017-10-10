@@ -2,6 +2,7 @@
 #define TRIANGLE_H
 
 #include "vector4f.h"
+#include <limits>
 #define INVERSETHREE 1.0f / 3.0f
 
 class Triangle 

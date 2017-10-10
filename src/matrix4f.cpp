@@ -354,7 +354,7 @@ void Matrix4f::scale(float scalar)
 	scaleVectorf(m_content,scalar,12);
 };
 
-float* Matrix4f::content() 
+float* Matrix4f::content() const
 {
 	return m_content;
 };

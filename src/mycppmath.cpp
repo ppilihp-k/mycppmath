@@ -704,8 +704,8 @@ static void genericMultiplyVector4fMatrix4f(
 };
 
 void multiplyVector4fMatrix4f(
-		float *m0, 
-		float *v0, 
+		const float *m0, 
+		const float *v0, 
 		float *v1
 		)
 {

@@ -77,7 +77,7 @@ class Matrix4f
 		/*
 			das array, welches diese matrix repraesentiert.
 		*/
-		float* 			content		();
+		float* 			content		() const;
 		/*
 			berechnet die determinante dieser matrix.
 		*/

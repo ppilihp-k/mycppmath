@@ -209,7 +209,7 @@ Vector4f& Vector4f::operator*(Matrix4f &m) const
 	return v;
 };
 
-void Vector4f::operator*=(Matrix4f &m)
+void Vector4f::operator*=(const Matrix4f &m)
 {
 	multiplyVector4fMatrix4f(m.content(),m_content,m_content);
 };

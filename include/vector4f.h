@@ -74,7 +74,7 @@ class Vector4f
 			weisst den aufrufenden objekt das kreuzprodukt zu.
 		*/
 		void 		operator*=	(const Vector4f &v);
-		void 		operator*=	(Matrix4f &m);
+		void 		operator*=	(const Matrix4f &m);
 		/*
 			zuweisungsoperator.
 		*/
