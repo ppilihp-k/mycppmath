@@ -10,6 +10,12 @@ Line::Line(const Line &l)
 	m_vertex = l.m_vertex;
 	m_direction = l.m_direction;
 };
+
+Line::Line(Line &&l)
+{
+	m_vertex = l.m_vertex;
+	m_direction = l.m_direction;	
+};
 /*
 Line::Line(Line &&l)
 {
@@ -21,7 +27,7 @@ Line::~Line()
 	
 };
 
-Line& Line::operator=(Line &l)
+Line& Line::operator=(const Line &l)
 {
 	if(this == &l){
 		return *this;
@@ -29,6 +35,16 @@ Line& Line::operator=(Line &l)
 	m_vertex = l.m_vertex;
 	m_direction = l.m_direction;
 	return *this;
+};
+
+Line& Line::operator=(Line &&l)
+{
+	if(this == &l){
+		return *this;
+	}
+	m_vertex = l.m_vertex;
+	m_direction = l.m_direction;
+	return *this;	
 };
 /*
 Line* Line::operator=(Line &&l)
@@ -61,18 +77,36 @@ Linesegment::Linesegment(const Linesegment &l) : Line(l)
 	m_vertex1 = l.m_vertex1;
 };
 
+Linesegment::Linesegment(Linesegment &&l) : Line(l)
+{
+	m_vertex1 = l.m_vertex1;
+};
+
 Linesegment::~Linesegment()
 {
 	
 };
 
-Linesegment& Linesegment::operator=(Linesegment &l)
+Linesegment& Linesegment::operator=(const Linesegment &l)
 {
 	if(this == &l)
 	{
 		return *this;
 	}
-	Line::operator=(l);
+	m_vertex = l.m_vertex;
+	m_direction = l.m_direction;
+	m_vertex1 = l.m_vertex1;
+	return *this;
+};
+
+Linesegment& Linesegment::operator=(Linesegment &&l)
+{
+	if(this == &l)
+	{
+		return *this;
+	}
+	m_vertex = l.m_vertex;
+	m_direction = l.m_direction;
 	m_vertex1 = l.m_vertex1;
 	return *this;
 };

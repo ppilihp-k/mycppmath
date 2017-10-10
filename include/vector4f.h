@@ -3,6 +3,7 @@
 
 #include "mycppmath.h"
 #include "matrix4f.h"
+//#include "myallocator.h"
 #include <thread> 
 #include <chrono>
 
@@ -51,11 +52,11 @@ class Vector4f
 			die methode wird mit der parallelen variante der vektoraddition
 			ausgefuehrt.
 		*/
-		Vector4f& 	operator+	(Vector4f &v)	const;
+		Vector4f& 	operator+	(const Vector4f &v)	const;
 		/*
 			analog operator+.
 		*/
-		void 		operator+=	(Vector4f &v);
+		void 		operator+=	(const Vector4f &v);
 		/*
 			analog operator+.
 		*/
@@ -127,9 +128,11 @@ class Vector4f
 		*/
 		void write();
 		void finishWrite();
-		std::string toString();
+		std::string toString() const;
+		/*
 		static void startSmartAllocator();
 		static void terminateSmartAllocator();
+		*/
 	private:
 		/*
 			4-elementiges array (dynamische zuweisung wegen adresse).

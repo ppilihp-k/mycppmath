@@ -325,7 +325,7 @@ static float serialInverseLength(const float *a, uint32_t n)
 	for(uint32_t i = 0;i < n;i++){
 		result += a[i];
 	}
-	return 1.0f / sqrt(result);
+	return result == 0.0f ? 0.0f : 1.0f / sqrt(result);
 };
 
 float inverseLengthVectorf(const float *a, uint32_t n)
@@ -727,17 +727,18 @@ void copyVector4f(
 		const float* f1
 		)
 {
-	for(uint32_t i = 0;i < 4;i++)
-	{
-		f0[i] = f1[i];
-	}
+	std::memcpy(f0, f1, 4 * sizeof(float));
 };
 
-uint32_t sign(float f)
+int32_t sign(float f)
 {
 	if(f < 0)
 	{
-		return false;
+		return -1;
+	} 
+	else if(f == 0)
+	{
+		return 0;
 	}
-	return true;
+	return 1;
 };
